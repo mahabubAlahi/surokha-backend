@@ -18,7 +18,6 @@ const dbService = require('./services/db-service');
  * express application
  */
 const app = express();
-routes.initializeApplicationRoutes(app);
 const DB = dbService().start();
 
 // allow cross origin requests
@@ -33,17 +32,17 @@ app.use(helmet({
 }));
 
 // parsing the request bodys
-app.use(express.urlencoded({ extended: false }));
-app.use(express.json());
-app.use(LogService.expressLogger());
 app.use(cors());
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+app.use(LogService.expressLogger());
+routes.initializeApplicationRoutes(app);
 
 /**
  * Get port from environment and store in Express.
  */
 
 const port = normalizePort(process.env.PORT || '3000');
-console.log(port);
 app.set('port', port);
 
 
