@@ -1,0 +1,41 @@
+version: "3.7"
+
+networks:
+  surokha_backend_net:
+
+services:
+  surokha_db:
+    image: mysql:5.7
+    container_name: surokha_backend_db
+    restart: unless-stopped
+    volumes:
+      - surokhabackenddbdata:/var/lib/mysql
+    env_file:
+      - variables.env
+    ports: 
+      - 3315:3306
+    networks:
+      - surokha_backend_net
+
+  surokha_app:
+    build:
+      dockerfile: Dockerfile
+      context: ./
+    image: surokha-backend-service:1.0.0
+    container_name: surokha_backend_app
+    restart: unless-stopped
+    working_dir: /usr/src/app/
+    volumes:
+      - ./:/usr/src/app/
+      - ~/datadrive/surokha-backend/application/log/:/usr/src/app/log
+    env_file:
+      - variables.env
+    ports:
+      - 9120:9120
+    networks:
+      - surokha_backend_net
+    depends_on:
+      - surokha_db
+
+volumes:
+  surokhabackenddbdata:
